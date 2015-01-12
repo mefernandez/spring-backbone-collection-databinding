@@ -16,6 +16,7 @@ Consider a web page showing a table of users like this one:
 | Lisa | lisa@mail.com |
 
 This is the set of actions to perform on this list of users:
+
 1. **Add** a new user. That means, adding a row to the table with a new name and email, and then submit that change to the server. **Also**, you may wish to add more than one user before submitting all changes at once.
 2. **Remove** a user. That means, removing a row from the table. The row may be of an existing user, or a user that's just been added on step 1. **Again**, more than one row can be deleted before submitting these changes to the server.
 3. **Modify** the data of a user.
