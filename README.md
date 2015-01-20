@@ -21,3 +21,23 @@ This is the set of actions to perform on this list of users:
 2. **Remove** a user. That means, removing a row from the table. The row may be of an existing user, or a user that's just been added on step 1. **Again**, more than one row can be deleted before submitting these changes to the server.
 3. **Modify** the data of a user.
  
+## Components
+
+The main components involved in this case study are:
+
+1. A `@Controller` with methods to handle `GET` and `POST` requests.
+2. A `User` class to hold the values for `name` and `email`.
+3. A `Form` class. This is just a `POJO` to hold a `List` of `User`s.
+4. An `HTML` template using [Thymeleaf](http://www.thymeleaf.org/) to render `@Controller` results.
+5. Some `JavaScript` to dynamically add or remove rows from the table of users.
+
+## Add a new user
+
+Let's start with an empty `List` of `User`s. Adding a new `User` to this `List` means to send a `POST` request to the `@Controller` with the `name` and `email` values for the new user. In order for `Spring` to bind this data, the request parameters should follow the convention described in [section Beans of the Spring Framework documentation](http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-beans-conventions). For this case, the `POST` request parameters look like:
+
+```
+users[0].name=John
+users[0].email=john@mail.com
+```
+
+Upon request, Spring will take the `users` property of the `Form` class, which is a `List<User>`, create an instance of `User` and place it at index 0, setting the value John for property `name` and john@mail.com for `email`.
