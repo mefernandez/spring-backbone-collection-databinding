@@ -40,4 +40,23 @@ users[0].name=John
 users[0].email=john@mail.com
 ```
 
-Upon request, Spring will take the `users` property of the `Form` class, which is a `List<User>`, create an instance of `User` and place it at index 0, setting the value John for property `name` and john@mail.com for `email`.
+Upon request, Spring will try to bind this data to the `@ModelAtrtibute` object defined inside the `@Controller` class, which in this case is an object of type `Form`.
+
+```java
+	@ModelAttribute("form")
+	public Form getForm() {
+		Form form = new Form();
+		List<User> users = new ArrayList<User>();
+		form.setUsers(users);
+		return form;
+	}
+```
+
+Spring will create an instance of `User` and set the value "John" for property `name` and "john@mail.com" for property `email`. It will then insert this new `User` instance at index 0 in the `users` property of the `form` instance of type `Form`.
+
+**This is the most simple scenario**, since the `List` is empty. But:
+- What if the `List` contains items?
+- What if the order of the items change between requests?
+- What if the items are removed from the `List` between requests?
+
+Let's address these questions.
