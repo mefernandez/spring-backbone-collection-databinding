@@ -31,6 +31,8 @@ The main components involved in this case study are:
 4. An `HTML` template using [Thymeleaf](http://www.thymeleaf.org/) to render `@Controller` results.
 5. Some `JavaScript` to dynamically add or remove rows from the table of users.
 
+Note that the first three items in the list above address the _server-side_ aspect of the problem, while the last two refer to the _client-side_.
+
 ## Add a new user
 
 Let's start with an empty `List` of `User`s. Adding a new `User` to this `List` means to send a `POST` request to the `@Controller` with the `name` and `email` values for the new user. In order for `Spring` to bind this data, the request parameters should follow the convention described in [section Beans of the Spring Framework documentation](http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-beans-conventions). For this case, the `POST` request parameters look like:
