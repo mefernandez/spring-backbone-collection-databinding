@@ -33,6 +33,8 @@ The main components involved in this case study are:
 
 Note that the first three items in the list above address the _server-side_ aspect of the problem, while the last two refer to the _client-side_.
 
+The following sections will focus on the _server-side_ where the databinding occurs, taking the `POST` request parameters as the starting point, no matter how the _client-side_ managed to produce these. At the end of this article, a section will be devoted to describe the _client-side_. 
+
 ## Add a new user
 
 Let's start with an empty `List` of `User`s. Adding a new `User` to this `List` means to send a `POST` request to the `@Controller` with the `name` and `email` values for the new user. In order for `Spring` to bind this data, the request parameters should follow the convention described in [section Beans of the Spring Framework documentation](http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-beans-conventions). For this case, the `POST` request parameters look like:
@@ -42,17 +44,7 @@ users[0].name=John
 users[0].email=john@mail.com
 ```
 
-Upon request, Spring will try to bind this data to the `@ModelAttribute` object defined inside the `@Controller` class, which in this case is an object of type `Form`.
-
-```java
-	@ModelAttribute("form")
-	public Form getForm() {
-		Form form = new Form();
-		List<User> users = new ArrayList<User>();
-		form.setUsers(users);
-		return form;
-	}
-```
+Upon request, Spring will try to bind this data to the `@ModelAttribute` object of type `Form` defined inside the `@Controller` class.
 
 Spring will create an instance of `User` and set the value "John" for property `name` and "john@mail.com" for property `email`. It will then insert this new `User` instance at index 0 in the `users` property of the `form` instance of type `Form`.
 
