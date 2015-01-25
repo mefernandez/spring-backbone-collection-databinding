@@ -1,6 +1,8 @@
 # spring-backbone-collection-databinding
 A case study on collection data binding with Spring and Backbone
 
+[ ![Codeship Status for mefernandez/spring-backbone-collection-databinding](https://codeship.com/projects/c6c0f240-8694-0132-2a45-6e1293eebb57/status?branch=master)](https://codeship.com/projects/58995)
+
 ## Introduction
 
 While developing a web application with Spring boot as the main framework, I came across the need to add, remove and modify a list of elements in a web page and submit these changes to the server. Although it's a common task for a web framework, I found it to be non-trivial, and documentation is scarse. So, I set out to write a case study to help me organize what I've leanrt and maybe help others.
