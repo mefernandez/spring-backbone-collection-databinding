@@ -1,0 +1,31 @@
+{
+  "name": "spring-backbone-collection-databinding",
+  "version": "0.0.0",
+  "description": "A case study on collection data binding with Spring and Backbone",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "~3.8.10",
+    "gulp-inject": "~1.1.1",
+    "main-bower-files": "~2.5.0",
+    "stream-series": "^0.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mefernandez/spring-backbone-collection-databinding.git"
+  },
+  "keywords": [
+    "spring",
+    "backbone",
+    "databinding"
+  ],
+  "author": "@eloy_iv",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mefernandez/spring-backbone-collection-databinding/issues"
+  },
+  "homepage": "https://github.com/mefernandez/spring-backbone-collection-databinding"
+}

@@ -48,9 +48,9 @@ public class DataBindingControllerTest {
 				.andExpect(status().is3xxRedirection());
 		
 		// Let's check that's true
-		assertEquals(1, controller.getForm().getUsers().size());
-		assertEquals("John", controller.getForm().getUsers().get(0).getName());
-		assertEquals("john@mail.com", controller.getForm().getUsers().get(0).getEmail());
+		assertEquals(1, controller.getUsers().size());
+		assertEquals("John", controller.getUsers().get(0).getName());
+		assertEquals("john@mail.com", controller.getUsers().get(0).getEmail());
 	}
 
 }

@@ -15,11 +15,11 @@ public class DataBindingController {
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String getHome() {
-		return "home";
+		return "index";
 	}
 	
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public String doBind(@ModelAttribute("form") Form form) {
+	public String updateUsers(@ModelAttribute("form") Form form) {
 		this.users = form.getUsers();
 		return "redirect:/";
 	}

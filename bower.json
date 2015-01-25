@@ -1,0 +1,23 @@
+{
+  "name": "spring-backbone-collection-databinding",
+  "version": "0.0.0",
+  "homepage": "https://github.com/mefernandez/spring-backbone-collection-databinding",
+  "authors": [
+    "Mariano Fernández <mariano.fernandez@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backbone": "~1.1.2",
+    "jquery": "~2.1.3",
+    "handlebars": "~2.0.0",
+    "backbone.localStorage": "~1.1.15"
+  }
+}
