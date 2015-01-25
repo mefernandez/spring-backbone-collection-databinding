@@ -36,7 +36,7 @@ public class DataBindingControllerTest {
 	}
 
 	@Test
-	public void addOneUserToAnEmptyList() throws Exception {
+	public void itAddsOneUserToAnEmptyListAtIndex0() throws Exception {
 		// Initialize the users to an empty List
 		ArrayList<User> users = new ArrayList<User>();
 		controller.setUsers(users);
@@ -51,6 +51,26 @@ public class DataBindingControllerTest {
 		assertEquals(1, controller.getUsers().size());
 		assertEquals("John", controller.getUsers().get(0).getName());
 		assertEquals("john@mail.com", controller.getUsers().get(0).getEmail());
+	}
+
+	@Test
+	public void addingOneUserToAnEmptyListAtIndex1InsertsANewEmptyUserAtIndex0() throws Exception {
+		// Initialize the users to an empty List
+		ArrayList<User> users = new ArrayList<User>();
+		controller.setUsers(users);
+		
+		// Let's intentionally add the user at index 1 to see what will happen to index 0
+		mockMvc.perform(post("/")
+				.param("users[1].name", "John")
+				.param("users[1].email", "john@mail.com"))
+				.andExpect(status().is3xxRedirection());
+		
+		// Let's check that's true
+		assertEquals(2, controller.getUsers().size());
+		assertNull(controller.getUsers().get(0).getName());
+		assertNull(controller.getUsers().get(0).getEmail());
+		assertEquals("John", controller.getUsers().get(1).getName());
+		assertEquals("john@mail.com", controller.getUsers().get(1).getEmail());
 	}
 
 }
