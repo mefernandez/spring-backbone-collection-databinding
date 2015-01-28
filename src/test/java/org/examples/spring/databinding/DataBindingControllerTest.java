@@ -73,4 +73,28 @@ public class DataBindingControllerTest {
 		assertEquals("john@mail.com", controller.getUsers().get(1).getEmail());
 	}
 
+	@Test
+	public void itAddsOneUserAtIndex1ToAListWithOneUserAtIndex0() throws Exception {
+		// Initialize the users to an empty List
+		ArrayList<User> users = new ArrayList<User>();
+		User user = new User();
+		user.setName("Mike");
+		user.setEmail("mike@mail.com");
+		users.add(user);
+		controller.setUsers(users);
+		
+		// Let's intentionally add the user at index 1 to see what will happen to index 0
+		mockMvc.perform(post("/")
+				.param("users[1].name", "John")
+				.param("users[1].email", "john@mail.com"))
+				.andExpect(status().is3xxRedirection());
+		
+		// Let's check that's true
+		assertEquals(2, controller.getUsers().size());
+		assertEquals("Mike", controller.getUsers().get(0).getName());
+		assertEquals("mike@mail.com", controller.getUsers().get(0).getEmail());
+		assertEquals("John", controller.getUsers().get(1).getName());
+		assertEquals("john@mail.com", controller.getUsers().get(1).getEmail());
+	}
+
 }
