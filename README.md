@@ -5,7 +5,9 @@ A case study on collection data binding with Spring and Backbone
 
 ## Introduction
 
-While developing a web application with Spring boot as the main framework, I came across the need to add, remove and modify a list of elements in a web page and submit these changes to the server. Although it's a common task for a web framework, I found it to be non-trivial, and documentation is scarse. So, I set out to write a case study to help me organize what I've leanrt and maybe help others.
+While developing a web application with Spring boot as the main framework, I came across the need to add, remove and modify a list of elements in a web page and submit these changes to the server. Although it's a common task for a web framework, I found it to be non-trivial. So, I set out to write a case study to help me organize what I've learnt and maybe help others.
+
+The application resulting from this case study is [running live thanks to Heroku](http://obscure-reef-8002.herokuapp.com/).
 
 ## The case
 
