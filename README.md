@@ -62,6 +62,15 @@ Here's the relevant code:
 ```
 
 ```java
+public class User {
+	// Getters and Setter ommited for the sake of brevity.
+	private String name;
+
+	private String email;
+}
+```
+
+```java
 @Controller
 public class DataBindingController {
 
@@ -86,10 +95,24 @@ And that's it. The method `updateUsers` gets a fully populated `Form` instance b
 
 However, **this is the most simple scenario**, since the `List` is empty. But:
 - What if the `List` already contains items?
-- What if the order of the items changes between requests?
-- What if the items are removed from the `List` between requests?
+- What if the order of the items changes between `GET` and `POST` requests?
+- What if the items are removed from the `List` between those two requests?
 
 Let's address these questions.
 
 ### A List that's not empty
 
+Binding a collection of objects would be as simple as described just before if only the `List` passed to the view on the `GET` request would be empty **and stayed empty** until the databinding process finished processing the `POST` request. This is so because the binding of the objects is done according to the `index` each object is stored in the `List`. If indexes change between `GET` and `POST`, the reference is lost, and the databinder will confuse the objects.
+
+It all seems to point to one direction: we need an **identifier** for objects of class `User`. So let's add it:
+
+```java
+public class User {
+
+	private Long id;
+	
+	private String name;
+
+	private String email;
+}
+```
