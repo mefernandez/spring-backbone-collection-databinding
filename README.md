@@ -102,7 +102,36 @@ Let's address these questions.
 
 ### A List that's not empty
 
-Binding a collection of objects would be as simple as described just before if only the `List` passed to the view on the `GET` request would be empty **and stayed empty** until the databinding process finished processing the `POST` request. This is so because the binding of the objects is done according to the `index` each object is stored in the `List`. If indexes change between `GET` and `POST`, the reference is lost, and the databinder will confuse the objects.
+Binding a collection of objects would be as simple as described just before if only the `List` passed to the view on the `GET` request would be empty **and stayed empty** until the databinding process finished processing the `POST` request. This is so because the binding of the objects is done according to the `index` each object is stored in the `List`. If indexes change between `GET` and `POST`, the reference is lost, and the databinder will confuse the objects. 
+
+Let's set an example to illustrate the problem with changing `indexes`. This is a `List` returned by the `GET` request and rendered as a table in the web page
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+| 1     | Mike | mike@mail.com |
+
+Now a new row is added at with data about `Lisa`.
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+| 1     | Mike | mike@mail.com |
+| 2(new)| Lisa | lisa@mail.com |
+
+Just before sending the data above as a `POST` request to the server, the `List` in the _server-side_ is changed, so that John at gets removed, and now Mike is the only item at `index 0`.
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | Mike | mike@mail.com |
+
+When the `POST` request sends the data, the result of the databinding will be like this:
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+| 1     | Mike | mike@mail.com |
+| 2(new)| Lisa | lisa@mail.com |
 
 It all seems to point to one direction: we need an **identifier** for objects of class `User`. So let's add it:
 
