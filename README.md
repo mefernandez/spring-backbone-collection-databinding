@@ -109,29 +109,27 @@ Let's set an example to illustrate the problem with changing `indexes`. This is 
 | Index | Name | Email         |
 |-------|------|---------------|
 | 0     | John | john@mail.com |
-| 1     | Mike | mike@mail.com |
 
-Now a new row is added at with data about `Lisa`.
-
-| Index | Name | Email         |
-|-------|------|---------------|
-| 0     | John | john@mail.com |
-| 1     | Mike | mike@mail.com |
-| 2(new)| Lisa | lisa@mail.com |
-
-Just before sending the data above as a `POST` request to the server, the `List` in the _server-side_ is changed, so that John at gets removed, and now Mike is the only item at `index 0`.
-
-| Index | Name | Email         |
-|-------|------|---------------|
-| 0     | Mike | mike@mail.com |
-
-When the `POST` request sends the data, the result of the databinding will be like this:
+Now a new row is added at with data about Lisa at _client-side_.
 
 | Index | Name | Email         |
 |-------|------|---------------|
 | 0     | John | john@mail.com |
-| 1     | Mike | mike@mail.com |
-| 2(new)| Lisa | lisa@mail.com |
+| 1(new)| Lisa | lisa@mail.com |
+
+Just before sending the data above as a `POST` request to the server, the `List` in the _server-side_ is changed, so that Mike also gets added at `index` 1.
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+| 1(new)| Mike | mike@mail.com |
+
+When the `POST` request sends the data about Lisa, it will overwrite Mike as a result of databinding based on `indexes`, and **Mike's data will get lost**:
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+| 1     | Lisa | lisa@mail.com |
 
 It all seems to point to one direction: we need an **identifier** for objects of class `User`. So let's add it:
 
