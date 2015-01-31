@@ -70,6 +70,22 @@ public class User {
 }
 ```
 
+```
+public class Form {
+
+	private List<User> users;
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
+}
+```
+
 ```java
 @Controller
 public class DataBindingController {
@@ -131,7 +147,7 @@ When the `POST` request sends the data about Lisa, it will overwrite Mike as a r
 | 0     | John | john@mail.com |
 | 1     | Lisa | lisa@mail.com |
 
-It all seems to point to one direction: we need an **identifier** for objects of class `User`. So let's add it:
+Let's try to overcome the problems with `indexes` by introducing an **identifier** for objects of class `User`.
 
 ```java
 public class User {
@@ -141,5 +157,54 @@ public class User {
 	private String name;
 
 	private String email;
+	
+	// Setters and Getters omitted for the sake of brevity
 }
 ```
+
+In order to leverage identifiers, let's change the type of the users from `List` to `Map`, so that Spring performs databinding based on the **key of the Map, which shall be the identifier** of the `User`.
+
+```java
+public class Form {
+
+	private Map<Long, User> users;
+
+	public Map<Long, User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Map<Long, User> users) {
+		this.users = users;
+	}
+
+}
+```
+
+Going back to the example, the view will again render this table upon `GET`request, but this time the `id` for John will be 1, which will match with the `key` in the Map.
+
+| _Key/Id_ | Name | Email         |
+|----------|------|---------------|
+| 1        | John | john@mail.com |
+
+Again, a new row is added at with data about Lisa at _client-side_. Since we need to store it with some _key_ in the `Map` that won't collide with the existing `id`s, let's choose **negative integers as keys** for new users, taking for granted that **identifiers will always be positive integers**.
+
+| Key/Id   | Name | Email         |
+|----------|------|---------------|
+| 1        | John | john@mail.com |
+| -1(new)  | Lisa | lisa@mail.com |
+
+Once more, just before sending the data above as a `POST` request to the server, the `Map` at the _server-side_ is changed, so that Mike also gets added with **id=2**, since John already has **id=1**.
+
+| Key/Id   | Name | Email         |
+|----------|------|---------------|
+| 1        | John | john@mail.com |
+| 2        | Mike | mike@mail.com |
+
+When the `POST` request sends the data about Lisa, Spring will create a new `User` object for Lisa and put it at **key=-1** inside the `Map`.
+
+| Key/Id   | Name | Email         |
+|----------|------|---------------|
+| 1        | John | john@mail.com |
+| 2        | Mike | mike@mail.com |
+| -1       | Lisa | lisa@mail.com |
+
