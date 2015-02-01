@@ -42,6 +42,7 @@ public class MapDataBindingControllerTest {
 		// Initialize the users to an empty Map
 		Map<Long, User> users = new HashMap<Long, User>();
 		controller.setUsers(users);
+		controller.getProcessor().startIdSequenceAt(1L);
 		
 		// Now POST one user data to be binded and added to the Map
 		mockMvc.perform(post("/map")
@@ -51,8 +52,8 @@ public class MapDataBindingControllerTest {
 		
 		// Let's check that's true
 		assertEquals(1, controller.getUsers().size());
-		assertEquals("John", controller.getUsers().get(-1L).getName());
-		assertEquals("john@mail.com", controller.getUsers().get(-1L).getEmail());
+		assertEquals("John", controller.getUsers().get(1L).getName());
+		assertEquals("john@mail.com", controller.getUsers().get(1L).getEmail());
 	}
 
 	@Test
@@ -60,6 +61,7 @@ public class MapDataBindingControllerTest {
 		// Initialize the users to an empty Map
 		Map<Long, User> users = new HashMap<Long, User>();
 		controller.setUsers(users);
+		controller.getProcessor().startIdSequenceAt(1L);
 		
 		// Now POST one user data to be binded and added to the Map
 		mockMvc.perform(post("/map")
@@ -71,10 +73,10 @@ public class MapDataBindingControllerTest {
 		
 		// Let's check that's true
 		assertEquals(2, controller.getUsers().size());
-		assertEquals("John", controller.getUsers().get(-1L).getName());
-		assertEquals("john@mail.com", controller.getUsers().get(-1L).getEmail());
-		assertEquals("Mike", controller.getUsers().get(-2L).getName());
-		assertEquals("mike@mail.com", controller.getUsers().get(-2L).getEmail());
+		assertEquals("John", controller.getUsers().get(1L).getName());
+		assertEquals("john@mail.com", controller.getUsers().get(1L).getEmail());
+		assertEquals("Mike", controller.getUsers().get(2L).getName());
+		assertEquals("mike@mail.com", controller.getUsers().get(2L).getEmail());
 	}
 
 	@Test
@@ -87,6 +89,7 @@ public class MapDataBindingControllerTest {
 		user.setEmail("mike@mail.com");
 		users.put(1L, user);
 		controller.setUsers(users);
+		controller.getProcessor().startIdSequenceAt(2L);
 		
 		// Let's add the new user at key -1
 		mockMvc.perform(post("/map")
@@ -98,8 +101,8 @@ public class MapDataBindingControllerTest {
 		assertEquals(2, controller.getUsers().size());
 		assertEquals("Mike", controller.getUsers().get(1L).getName());
 		assertEquals("mike@mail.com", controller.getUsers().get(1L).getEmail());
-		assertEquals("John", controller.getUsers().get(-1L).getName());
-		assertEquals("john@mail.com", controller.getUsers().get(-1L).getEmail());
+		assertEquals("John", controller.getUsers().get(2L).getName());
+		assertEquals("john@mail.com", controller.getUsers().get(2L).getEmail());
 	}
 
 	@Test
@@ -112,6 +115,7 @@ public class MapDataBindingControllerTest {
 		user.setEmail("mike@mail.com");
 		users.put(1L, user);
 		controller.setUsers(users);
+		controller.getProcessor().startIdSequenceAt(2L);
 		
 		// Modify John's email
 		mockMvc.perform(post("/map")

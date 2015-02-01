@@ -23,6 +23,8 @@ public class MapDataBindingController {
 	@RequestMapping(value = "/map", method = RequestMethod.POST)
 	public String updateUsers(@ModelAttribute("form") Form form) {
 		processor.process(form.getUsers());
+		// Save the binded data to our "Repository"
+		this.users.putAll(form.getUsers());
 		return "redirect:/map";
 	}
 	
@@ -39,6 +41,14 @@ public class MapDataBindingController {
 
 	public void setUsers(Map<Long, User> users) {
 		this.users = users;
+	}
+
+	public UserMapPostProcessor getProcessor() {
+		return processor;
+	}
+
+	public void setProcessor(UserMapPostProcessor processor) {
+		this.processor = processor;
 	}
 
 }
