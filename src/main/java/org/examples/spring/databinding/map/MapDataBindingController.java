@@ -1,5 +1,6 @@
 package org.examples.spring.databinding.map;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MapDataBindingController {
 	
 	// This stands for a repository of users. Using a List for simplicity.
-	private Map<Long, User> users;
+	private Map<Long, User> users = new HashMap<Long, User>();
 	
 	private UserMapPostProcessor processor = new UserMapPostProcessor();
 	

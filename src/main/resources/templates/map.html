@@ -41,7 +41,7 @@
 					<td><input type="text" name="email" placeholder="Enter Email" /></td>
 					<td><button id="add-new-user-btn">Add</button></td>
 				</tr>
-				<tr th:each="user: ${form.users.values()}">
+				<tr ht:if="${form.users} != null" th:each="user: ${form.users.values()}">
 					<td th:text="${user.id}">1</td>
 					<td th:text="${user.name}">John</td>
 					<td><a th:text="${user.email}" th:href="|mailto:${user.email}|">john@mail.com</a></td>
