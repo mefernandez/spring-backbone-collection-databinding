@@ -1,4 +1,4 @@
-package org.examples.spring.databinding;
+package org.examples.spring.databinding.list;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 
+import org.examples.spring.databinding.Application;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,7 @@ import org.springframework.web.context.WebApplicationContext;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
-public class DataBindingControllerTest {
+public class ListDataBindingControllerTest {
 
 	@Autowired
 	private WebApplicationContext wac;
@@ -28,7 +29,7 @@ public class DataBindingControllerTest {
 	private MockMvc mockMvc;
 	
 	@Autowired
-	private DataBindingController controller;
+	private ListDataBindingController controller;
 
 	@Before
 	public void setup() {
@@ -42,7 +43,7 @@ public class DataBindingControllerTest {
 		controller.setUsers(users);
 		
 		// Now POST one user data to be binded and added to the List
-		mockMvc.perform(post("/")
+		mockMvc.perform(post("/list")
 				.param("users[0].name", "John")
 				.param("users[0].email", "john@mail.com"))
 				.andExpect(status().is3xxRedirection());
@@ -60,7 +61,7 @@ public class DataBindingControllerTest {
 		controller.setUsers(users);
 		
 		// Let's intentionally add the user at index 1 to see what will happen to index 0
-		mockMvc.perform(post("/")
+		mockMvc.perform(post("/list")
 				.param("users[1].name", "John")
 				.param("users[1].email", "john@mail.com"))
 				.andExpect(status().is3xxRedirection());
@@ -84,7 +85,7 @@ public class DataBindingControllerTest {
 		controller.setUsers(users);
 		
 		// Let's intentionally add the user at index 1 to see what will happen to index 0
-		mockMvc.perform(post("/")
+		mockMvc.perform(post("/list")
 				.param("users[1].name", "John")
 				.param("users[1].email", "john@mail.com"))
 				.andExpect(status().is3xxRedirection());

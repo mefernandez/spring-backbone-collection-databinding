@@ -8,7 +8,7 @@
 <script src="/js/libs/handlebars.js"></script>
 <script src="/js/libs/backbone.js"></script>
 <script src="/js/libs/backbone.localStorage.js"></script>
-<script src="/js/app.js"></script>
+<script src="/js/map-databinding.js"></script>
 <!-- endinject -->
 <!-- inject:css -->
 <link rel="stylesheet" href="/css/styles.css" />
@@ -16,8 +16,9 @@
 
 <script type="text/x-handlebars-template" id="user-row-template">
       <tr>
-        <td><input type="hidden" name="users[{{index}}].name" value="{{name}}"/>{{name}}</td>
-        <td><input type="hidden" name="users[{{index}}].email" value="{{email}}"/><a href="mailto:{{email}}">{{email}}</a></td>
+        <td><input type="hidden" name="users[{{id}}].id" value="{{id}}"/>{{id}}</td>
+        <td><input type="hidden" name="users[{{id}}].name" value="{{name}}"/>{{name}}</td>
+        <td><input type="hidden" name="users[{{id}}].email" value="{{email}}"/><a href="mailto:{{email}}">{{email}}</a></td>
         <td></td>
       </tr>
 </script>
@@ -27,6 +28,7 @@
 		<table>
 			<thead>
 				<tr>
+					<th>Id</th>
 					<th>Name</th>
 					<th>Email</th>
 					<th>Action</th>
@@ -34,11 +36,13 @@
 			</thead>
 			<tbody id="user-table-template">
 				<tr>
+					<td>New</td>
 					<td><input type="text" name="name" placeholder="Enter Name" /></td>
 					<td><input type="text" name="email" placeholder="Enter Email" /></td>
 					<td><button id="add-new-user-btn">Add</button></td>
 				</tr>
-				<tr th:each="user: ${form.users}">
+				<tr th:each="user: ${form.users.values()}">
+					<td th:text="${user.id}">1</td>
 					<td th:text="${user.name}">John</td>
 					<td><a th:text="${user.email}" th:href="|mailto:${user.email}|">john@mail.com</a></td>
 					<td></td>

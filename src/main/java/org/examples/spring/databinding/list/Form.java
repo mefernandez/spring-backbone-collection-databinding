@@ -1,4 +1,4 @@
-package org.examples.spring.databinding;
+package org.examples.spring.databinding.list;
 
 import java.util.List;
 

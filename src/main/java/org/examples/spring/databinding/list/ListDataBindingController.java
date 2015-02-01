@@ -1,4 +1,4 @@
-package org.examples.spring.databinding;
+package org.examples.spring.databinding.list;
 
 import java.util.List;
 
@@ -8,20 +8,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-public class DataBindingController {
+public class ListDataBindingController {
 	
 	// This stands for a repository of users. Using a List for simplicity.
 	private List<User> users;
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String getHome() {
-		return "index";
+		return "list";
 	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.POST)
+	@RequestMapping(value = "/list", method = RequestMethod.POST)
 	public String updateUsers(@ModelAttribute("form") Form form) {
 		this.users = form.getUsers();
-		return "redirect:/";
+		return "redirect:/list";
 	}
 	
 	@ModelAttribute("form")

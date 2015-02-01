@@ -1,4 +1,4 @@
-package org.examples.spring.databinding;
+package org.examples.spring.databinding.map;
 
 public class User {
 	
