@@ -162,7 +162,7 @@ public class User {
 }
 ```
 
-In order to leverage identifiers, let's change the type of the users from `List` to `Map`, so that Spring performs databinding based on the **key of the Map, which shall be the identifier** of the `User`.
+In order to leverage identifiers, let's change the type of the users from `List` to `Map`. The `Map` will be populated with exising users storing each at **key=id**.
 
 ```java
 public class Form {
@@ -182,29 +182,30 @@ public class Form {
 
 Going back to the example, the view will again render this table upon `GET`request, but this time the `id` for John will be 1, which will match with the `key` in the Map.
 
-| _Key/Id_ | Name | Email         |
-|----------|------|---------------|
-| 1        | John | john@mail.com |
+| Key | Id | Name | Email         |
+|-----|----|------|---------------|
+| 1   | 1  | John | john@mail.com |
 
-Again, a new row is added at with data about Lisa at _client-side_. Since we need to store it with some _key_ in the `Map` that won't collide with the existing `id`s, let's choose **negative integers as keys** for new users, taking for granted that **identifiers will always be positive integers**.
+Again, a new row is added with data about Lisa at _client-side_. Since we need to store it with some **key** in the `Map` that won't collide with the existing **ids**, let's choose **negative integers as keys** for new users, taking for granted that **identifiers will always be positive integers**, generated and assigned at _server-side_.
 
-| Key/Id   | Name | Email         |
-|----------|------|---------------|
-| 1        | John | john@mail.com |
-| -1(new)  | Lisa | lisa@mail.com |
+| Key | Id | Name | Email         |
+|-----|----|------|---------------|
+| 1   | 1  | John | john@mail.com |
+| -1  | 1  | Lisa | lisa@mail.com |
 
 Once more, just before sending the data above as a `POST` request to the server, the `Map` at the _server-side_ is changed, so that Mike also gets added with **id=2**, since John already has **id=1**.
 
-| Key/Id   | Name | Email         |
-|----------|------|---------------|
-| 1        | John | john@mail.com |
-| 2        | Mike | mike@mail.com |
+| Key | Id | Name | Email         |
+|-----|----|------|---------------|
+| 1   | 1  | John | john@mail.com |
+| 2   | 2  | Mike | mike@mail.com |
 
 When the `POST` request sends the data about Lisa, Spring will create a new `User` object for Lisa and put it at **key=-1** inside the `Map`.
 
-| Key/Id   | Name | Email         |
-|----------|------|---------------|
-| 1        | John | john@mail.com |
-| 2        | Mike | mike@mail.com |
-| -1       | Lisa | lisa@mail.com |
+| Key | Id   | Name | Email         |
+|-----|------|------|---------------|
+| 1   | 1    | John | john@mail.com |
+| 2   | 2    | Mike | mike@mail.com |
+| -1  | null | Lisa | lisa@mail.com |
 
+Once databinding is done, the _server-side_ will assign Lisa an **id=3**.
