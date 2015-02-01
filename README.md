@@ -39,7 +39,7 @@ Note that the first three items in the list above address the _server-side_ aspe
 
 The following sections will focus on the _server-side_ where the databinding occurs, taking the `POST` request parameters as the starting point, no matter how the _client-side_ managed to produce these. At the end of this article, a section will be devoted to describe the _client-side_. 
 
-## Add a new user
+## An Empty List
 
 Let's start with an empty `List` of `User`s. Adding a new `User` to this `List` means to send a `POST` request to the `@Controller` with the `name` and `email` values for the new user. In order for `Spring` to bind this data, the request parameters should follow the convention described in [section Beans of the Spring Framework documentation](http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-beans-conventions). For this case, the `POST` request parameters look like:
 
@@ -116,7 +116,7 @@ However, **this is the most simple scenario**, since the `List` is empty. But:
 
 Let's address these questions.
 
-### A List that's not empty
+## A List that's not empty
 
 Binding a collection of objects would be as simple as described just before if only the `List` passed to the view on the `GET` request would be empty **and stayed empty** until the databinding process finished processing the `POST` request. This is so because the binding of the objects is done according to the `index` each object is stored in the `List`. If indexes change between `GET` and `POST`, the reference is lost, and the databinder will confuse the objects. 
 
@@ -209,3 +209,29 @@ When the `POST` request sends the data about Lisa, Spring will create a new `Use
 | -1  | null | Lisa | lisa@mail.com |
 
 Once databinding is done, the _server-side_ will assign Lisa an **id=3**.
+
+### Modifying users
+
+Modifying users is given for free with this setup. The _client-side_ only needs to send the data of the row that's changed. Spring will update the data in the object that's stored in the `Map` at the specific key that matches the object's id. For instance, if John's email gets changed:
+
+| Key | Id   | Name | Email         |
+|-----|------|------|---------------|
+| 1   | 1    | John | john@foo.bar  |
+| 2   | 2    | Mike | mike@mail.com |
+| 3   | 3    | Lisa | lisa@mail.com |
+
+### Removing users
+
+In order to tell which users are removed, the _client-side_ will set **id=null**, but keeping the **key** value. For instance, if John gets removed:
+
+| Key | Id   | Name | Email         |
+|-----|------|------|---------------|
+| 1   | null | John | john@foo.bar  |
+| 2   | 2    | Mike | mike@mail.com |
+| 3   | 3    | Lisa | lisa@mail.com |
+
+The _server-side_ will then remove all instances with null id.
+
+## The client side
+
+Now that there's a **databinding contract** in place, let's see how to play by these rules at _client-side_
