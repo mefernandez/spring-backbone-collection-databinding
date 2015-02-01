@@ -39,7 +39,7 @@ Note that the first three items in the list above address the _server-side_ aspe
 
 The following sections will focus on the _server-side_ where the databinding occurs, taking the `POST` request parameters as the starting point, no matter how the _client-side_ managed to produce these. At the end of this article, a section will be devoted to describe the _client-side_. 
 
-## Add a new user
+## An Empty List
 
 Let's start with an empty `List` of `User`s. Adding a new `User` to this `List` means to send a `POST` request to the `@Controller` with the `name` and `email` values for the new user. In order for `Spring` to bind this data, the request parameters should follow the convention described in [section Beans of the Spring Framework documentation](http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-beans-conventions). For this case, the `POST` request parameters look like:
 
@@ -67,6 +67,22 @@ public class User {
 	private String name;
 
 	private String email;
+}
+```
+
+```
+public class Form {
+
+	private List<User> users;
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
 }
 ```
 
@@ -100,11 +116,38 @@ However, **this is the most simple scenario**, since the `List` is empty. But:
 
 Let's address these questions.
 
-### A List that's not empty
+## A List that's not empty
 
-Binding a collection of objects would be as simple as described just before if only the `List` passed to the view on the `GET` request would be empty **and stayed empty** until the databinding process finished processing the `POST` request. This is so because the binding of the objects is done according to the `index` each object is stored in the `List`. If indexes change between `GET` and `POST`, the reference is lost, and the databinder will confuse the objects.
+Binding a collection of objects would be as simple as described just before if only the `List` passed to the view on the `GET` request would be empty **and stayed empty** until the databinding process finished processing the `POST` request. This is so because the binding of the objects is done according to the `index` each object is stored in the `List`. If indexes change between `GET` and `POST`, the reference is lost, and the databinder will confuse the objects. 
 
-It all seems to point to one direction: we need an **identifier** for objects of class `User`. So let's add it:
+Let's set an example to illustrate the problem with changing `indexes`. This is a `List` returned by the `GET` request and rendered as a table in the web page
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+
+Now a new row is added at with data about Lisa at _client-side_.
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+| 1(new)| Lisa | lisa@mail.com |
+
+Just before sending the data above as a `POST` request to the server, the `List` in the _server-side_ is changed, so that Mike also gets added at `index` 1.
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+| 1(new)| Mike | mike@mail.com |
+
+When the `POST` request sends the data about Lisa, it will overwrite Mike as a result of databinding based on `indexes`, and **Mike's data will get lost**:
+
+| Index | Name | Email         |
+|-------|------|---------------|
+| 0     | John | john@mail.com |
+| 1     | Lisa | lisa@mail.com |
+
+Let's try to overcome the problems with `indexes` by introducing an **identifier** for objects of class `User`.
 
 ```java
 public class User {
@@ -114,5 +157,81 @@ public class User {
 	private String name;
 
 	private String email;
+	
+	// Setters and Getters omitted for the sake of brevity
 }
 ```
+
+In order to leverage identifiers, let's change the type of the users from `List` to `Map`. The `Map` will be populated with exising users storing each at **key=id**.
+
+```java
+public class Form {
+
+	private Map<Long, User> users;
+
+	public Map<Long, User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(Map<Long, User> users) {
+		this.users = users;
+	}
+
+}
+```
+
+Going back to the example, the view will again render this table upon `GET`request, but this time the `id` for John will be 1, which will match with the `key` in the Map.
+
+| Key | Id | Name | Email         |
+|-----|----|------|---------------|
+| 1   | 1  | John | john@mail.com |
+
+Again, a new row is added with data about Lisa at _client-side_. Since we need to store it with some **key** in the `Map` that won't collide with the existing **ids**, let's choose **negative integers as keys** for new users, taking for granted that **identifiers will always be positive integers**, generated and assigned at _server-side_.
+
+| Key | Id | Name | Email         |
+|-----|----|------|---------------|
+| 1   | 1  | John | john@mail.com |
+| -1  | 1  | Lisa | lisa@mail.com |
+
+Once more, just before sending the data above as a `POST` request to the server, the `Map` at the _server-side_ is changed, so that Mike also gets added with **id=2**, since John already has **id=1**.
+
+| Key | Id | Name | Email         |
+|-----|----|------|---------------|
+| 1   | 1  | John | john@mail.com |
+| 2   | 2  | Mike | mike@mail.com |
+
+When the `POST` request sends the data about Lisa, Spring will create a new `User` object for Lisa and put it at **key=-1** inside the `Map`.
+
+| Key | Id   | Name | Email         |
+|-----|------|------|---------------|
+| 1   | 1    | John | john@mail.com |
+| 2   | 2    | Mike | mike@mail.com |
+| -1  | null | Lisa | lisa@mail.com |
+
+Once databinding is done, the _server-side_ will assign Lisa an **id=3**.
+
+### Modifying users
+
+Modifying users is given for free with this setup. The _client-side_ only needs to send the data of the row that's changed. Spring will update the data in the object that's stored in the `Map` at the specific key that matches the object's id. For instance, if John's email gets changed:
+
+| Key | Id   | Name | Email         |
+|-----|------|------|---------------|
+| 1   | 1    | John | john@foo.bar  |
+| 2   | 2    | Mike | mike@mail.com |
+| 3   | 3    | Lisa | lisa@mail.com |
+
+### Removing users
+
+In order to tell which users are removed, the _client-side_ will set **id=null**, but keeping the **key** value. For instance, if John gets removed:
+
+| Key | Id   | Name | Email         |
+|-----|------|------|---------------|
+| 1   | null | John | john@foo.bar  |
+| 2   | 2    | Mike | mike@mail.com |
+| 3   | 3    | Lisa | lisa@mail.com |
+
+The _server-side_ will then remove all instances with null id.
+
+## The client side
+
+Now that there's a **databinding contract** in place, let's see how to play by these rules at _client-side_
