@@ -15,17 +15,15 @@
 <!-- endinject -->
 
 <script type="text/x-handlebars-template" id="user-row-template">
-      <tr>
-        <td><input type="hidden" name="users[{{id}}].id" value="{{id}}"/>{{id}}</td>
-        <td><input type="hidden" name="users[{{id}}].name" value="{{name}}"/>{{name}}</td>
-        <td><input type="hidden" name="users[{{id}}].email" value="{{email}}"/><a href="mailto:{{email}}">{{email}}</a></td>
-        <td></td>
-      </tr>
+<td><input type="hidden" name="users[{{id}}].id" value="{{id}}"/>{{id}}</td>
+<td><input type="hidden" name="users[{{id}}].name" value="{{name}}"/>{{name}}</td>
+<td><input type="hidden" name="users[{{id}}].email" value="{{email}}"/><a href="mailto:{{email}}">{{email}}</a></td>
+<td><input type="button" class="delete-user-btn" value="Delete" data-id="{{id}}"/></td>
 </script>
 </head>
 <body>
 	<form id="new-user-form" method="post">
-		<table>
+		<table id="user-table-template">
 			<thead>
 				<tr>
 					<th>Id</th>
@@ -33,19 +31,19 @@
 					<th>Email</th>
 					<th>Action</th>
 				</tr>
-			</thead>
-			<tbody id="user-table-template">
 				<tr>
 					<td>New</td>
 					<td><input type="text" name="name" placeholder="Enter Name" /></td>
 					<td><input type="text" name="email" placeholder="Enter Email" /></td>
-					<td><button id="add-new-user-btn">Add</button></td>
+					<td><input type="button" id="add-new-user-btn" value="Add" /></td>
 				</tr>
-				<tr ht:if="${form.users} != null" th:each="user: ${form.users.values()}">
+			</thead>
+			<tbody>
+				<tr th:if="${form.users} != null" th:each="user: ${form.users.values()}">
 					<td th:text="${user.id}">1</td>
 					<td th:text="${user.name}">John</td>
 					<td><a th:text="${user.email}" th:href="|mailto:${user.email}|">john@mail.com</a></td>
-					<td></td>
+					<td><input type="button" class="delete-user-btn" value="Delete" th:attr="data-id=${user.id}"/></td>
 				</tr>
 			</tbody>
 		</table>
