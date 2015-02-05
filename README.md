@@ -234,4 +234,9 @@ The _server-side_ will then remove all instances with null id.
 
 ## The client side
 
-Now that there's a **databinding contract** in place, let's see how to play by these rules at _client-side_
+Now that there's a **databinding contract** in place, let's see how to play by these rules at _client-side_.
+
+
+We'll be using:
+1. [Thymeleaf](http://www.thymeleaf.org/) to render the initial table with the collection of `User`s retrieved from the `Repository`.
+2. [Backbone.js](http://backbonejs.org/) to add dynamic capabilities to the table rendered by Thymeleaf to perform CRUD (CReate, Update, Delete) operations and to abide by Spring's databinding contract. Take a look at the [annotated, side-by-side commented Backbone code](http://explainjs.com/explain.json?src=https://raw.githubusercontent.com/mefernandez/spring-backbone-collection-databinding/master/src/main/resources/static/js/map-databinding.js).
