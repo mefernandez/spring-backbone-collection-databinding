@@ -240,4 +240,4 @@ Now that there's a **databinding contract** in place, let's see how to play by t
 We'll be using:
 
 1. [Thymeleaf](http://www.thymeleaf.org/) to render the initial table with the collection of `User`s retrieved from the `Repository`.
-2. [Backbone.js](http://backbonejs.org/) to add dynamic capabilities to the table rendered by Thymeleaf to perform CRUD (CReate, Update, Delete) operations and to abide by Spring's databinding contract. Take a look at the [annotated, side-by-side commented Backbone code](http://explainjs.com/explain.json?src=https://raw.githubusercontent.com/mefernandez/spring-backbone-collection-databinding/master/src/main/resources/static/js/map-databinding.js).
+2. [Backbone.js](http://backbonejs.org/) to add dynamic capabilities to the table rendered by Thymeleaf to perform CRUD (CReate, Update, Delete) operations and to abide by Spring's databinding contract. Take a look at the [annotated, side-by-side commented Backbone code](http://www.explainjs.com/explain?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmefernandez%2Fspring-backbone-collection-databinding%2Fmaster%2Fsrc%2Fmain%2Fresources%2Fstatic%2Fjs%2Fmap-databinding.js).
