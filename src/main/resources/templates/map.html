@@ -15,9 +15,9 @@
 <!-- endinject -->
 
 <script type="text/x-handlebars-template" id="user-row-template">
-<td><input type="hidden" name="users[{{id}}].id" value="{{id}}"/>{{id}}</td>
-<td><input type="hidden" name="users[{{id}}].name" value="{{name}}"/>{{name}}</td>
-<td><input type="hidden" name="users[{{id}}].email" value="{{email}}"/><a href="mailto:{{email}}">{{email}}</a></td>
+<td><input type="hidden" name="users[{{key}}].id" value="{{id}}"/>{{id}}</td>
+<td><input type="hidden" name="users[{{key}}].name" value="{{name}}"/>{{name}}</td>
+<td><input type="hidden" name="users[{{key}}].email" value="{{email}}"/><a href="mailto:{{email}}">{{email}}</a></td>
 <td><input type="button" class="delete-user-btn" value="Delete" data-id="{{id}}"/></td>
 </script>
 </head>
