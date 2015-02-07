@@ -252,7 +252,7 @@ In order to tell which users are removed, the _client-side_ will set **id=null**
 
 The _server-side_ will then remove all instances with null id.
 
-### To sum it up, **this is the databinding contract** for `Map`-backed collection of items:
+To sum it up, **this is the databinding contract** for `Map`-backed collection of items:
 
 1. **New** items are stored in the `Map` with **negative key values** and **id=null**
 2. **Deleted** items are kept in the `Map` with the **same key**, but setting **id=null**
