@@ -18,6 +18,7 @@
 <td><input type="hidden" name="users[{{key}}].id" value="{{id}}"/>{{id}}</td>
 <td><input type="hidden" name="users[{{key}}].name" value="{{name}}"/>{{name}}</td>
 <td><input type="hidden" name="users[{{key}}].email" value="{{email}}"/><a href="mailto:{{email}}">{{email}}</a></td>
+<td><input type="button" class="edit-user-btn" value="Edit" data-id="{{id}}"/></td>
 <td><input type="button" class="delete-user-btn" value="Delete" data-id="{{id}}"/></td>
 </script>
 </head>
@@ -29,20 +30,21 @@
 					<th>Id</th>
 					<th>Name</th>
 					<th>Email</th>
-					<th>Action</th>
+					<th colspan="2">Action</th>
 				</tr>
 				<tr>
 					<td>New</td>
 					<td><input type="text" name="name" placeholder="Enter Name" /></td>
 					<td><input type="text" name="email" placeholder="Enter Email" /></td>
-					<td><input type="button" id="add-new-user-btn" value="Add" /></td>
+					<td colspan="2"><input type="button" id="add-new-user-btn" value="Add" /></td>
 				</tr>
 			</thead>
 			<tbody>
 				<tr th:if="${form.users} != null" th:each="user: ${form.users.values()}">
 					<td th:text="${user.id}">1</td>
-					<td th:text="${user.name}">John</td>
-					<td><a th:text="${user.email}" th:href="|mailto:${user.email}|">john@mail.com</a></td>
+					<td th:text="${user.name}" class="editable" data-model-attr="name">John</td>
+					<td class="editable" data-model-attr="email"><a th:text="${user.email}" th:href="|mailto:${user.email}|">john@mail.com</a></td>
+					<td><input type="button" class="edit-user-btn" value="Edit" th:attr="data-id=${user.id}"/></td>
 					<td><input type="button" class="delete-user-btn" value="Delete" th:attr="data-id=${user.id}"/></td>
 				</tr>
 			</tbody>

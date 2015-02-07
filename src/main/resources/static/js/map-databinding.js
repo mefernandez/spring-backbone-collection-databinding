@@ -37,6 +37,8 @@ $(function(){
 		tagName: "tr",
 		template: Handlebars.compile($('#user-row-template').html()),
 		events: {
+			'click .edit-user-btn': 'editUser',
+			'click .done-edit-btn': 'doneEdit',
 			'click .delete-user-btn': 'deleteUser'
 		},
 		render: function() {
@@ -60,6 +62,33 @@ $(function(){
 				// so let's keep its `key` on the Map, but set `id=null` 
 				this.model.set('id', null);
 			}
+		},
+		editUser : function(e) {
+			this.$el.find('td.editable').each(function(index, cell) {
+				var textbox = $('<input>')
+					.attr('type', 'text')
+					.attr('class', 'editable')
+					.attr('value', $(cell).text());
+				$(cell).empty();
+				$(cell).append(textbox);
+			});
+			this.$el.find('.edit-user-btn')
+				.val('Done')
+				.removeClass('edit-user-btn')
+				.addClass('done-edit-btn');
+		},
+		doneEdit : function(e) {
+			var attributes = {};
+			this.$el.find('td.editable').each(function(index, cell) {
+				var attrName = $(cell).attr('data-model-attr');
+				var attrValue = $(cell).find('input').val();
+				attributes[attrName] = attrValue;
+			});
+			this.model.set(attributes);
+			this.$el.find('.done-edit-btn')
+				.val('Edit')
+				.removeClass('done-edit-btn')
+				.addClass('edit-user-btn');
 		},
 		removeOne : function(user) {
 			var view = new UserRowView({
