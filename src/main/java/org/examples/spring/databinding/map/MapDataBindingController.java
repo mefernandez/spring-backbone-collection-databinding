@@ -23,7 +23,10 @@ public class MapDataBindingController {
 	
 	@RequestMapping(value = "/map", method = RequestMethod.POST)
 	public String updateUsers(@ModelAttribute("form") Form form) {
+		// Process the Users in this Map according to 
+		// the databinding convention for Map about keys and ids
 		processor.process(form.getUsers());
+		
 		// Save the binded data to our "Repository"
 		this.users.putAll(form.getUsers());
 		return "redirect:/map";
