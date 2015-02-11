@@ -31,15 +31,25 @@ The main components involved in this case study are:
 
 1. A `@Controller` with methods to handle `GET` and `POST` requests.
 2. A `User` class to hold the values for `name` and `email`.
-3. A `Form` class. This is just a `POJO` to hold a `List` of `User`s.
+3. A `Form` class. This is just a `POJO` to hold a _collection_ of `User`s.
 4. An `HTML` template using [Thymeleaf](http://www.thymeleaf.org/) to render `@Controller` results.
-5. Some `JavaScript` to dynamically add or remove rows from the table of users.
+5. `JavaScript` code using [Backbone](http://backbonejs.org/) to dynamically add or remove table rows.
 
 Note that the first three items in the list above address the _server-side_ aspect of the problem, while the last two refer to the _client-side_.
 
-The following sections will focus on the _server-side_ where the databinding occurs, taking the `POST` request parameters as the starting point, no matter how the _client-side_ managed to produce these. At the end of this article, a section will be devoted to describe the _client-side_. 
+The following sections will focus on the _server-side_ where the databinding occurs, taking the `POST` request parameters as the starting point, no matter how the _client-side_ managed to produce these. At the end of this article, a section will be devoted to describe the _client-side_.
 
-## An Empty List
+## Scenarios
+
+This is the list of cases to study:
+
+1. [An empty `List`](#an-empty-list), where the collection of `User`s is actually an empty `java.util.List`. It's worth studying this case for its simplicity and also because there may be times where the collection will only get created once and not edited thereafter.
+2. [A non-empty `Map`](#a-non-empty-map), where the collection of `User`s is actually a non-empty `java.util.Map`. The case will start showing the problems with a non-empty `List` and indexed-based databinding, and then overcome these problems using `Map` instead of `List`.
+3. [Using `JPA`](#using-jpa), and how to perform databinding when the collection of `User`s is retrieved directly from a `@Repository` using [spring-data-jpa](http://projects.spring.io/spring-data-jpa/) module.
+
+## The _server-side_
+
+## An empty List
 
 Let's start with an empty `List` of `User`s. Adding a new `User` to this `List` means to send a `POST` request to the `@Controller` with the `name` and `email` values for the new user. In order for `Spring` to bind this data, the request parameters should follow the convention described in [section Beans of the Spring Framework documentation](http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#beans-beans-conventions). For this case, the `POST` request parameters look like:
 
@@ -116,7 +126,7 @@ However, **this is the most simple scenario**, since the `List` is empty. But:
 
 Let's address these questions.
 
-## A List that's not empty
+## A non-empty `Map`
 
 Binding a collection of objects would be as simple as described just before if only the `List` passed to the view on the `GET` request would be empty **and stayed empty** until the databinding process finished processing the `POST` request. This is so because the binding of the objects is done according to the `index` each object is stored in the `List`. If indexes change between `GET` and `POST`, the reference is lost, and the databinder will confuse the objects. 
 
@@ -212,13 +222,23 @@ Once databinding is done, the _server-side_ will assign Lisa an **id=3**.
 
 ### Modifying users
 
-Modifying users is given for free with this setup. The _client-side_ only needs to send the data of the row that's changed. Spring will update the data in the object that's stored in the `Map` at the specific key that matches the object's id. For instance, if John's email gets changed:
+Modifying users is given for free with this setup. The _client-side_ only needs to send the data of the row that's changed. Spring will update the data in the object that's stored in the `Map` at the specific key that matches the object's id. 
 
-| Key | Id   | Name | Email         |
-|-----|------|------|---------------|
-| 1   | 1    | John | john@foo.bar  |
-| 2   | 2    | Mike | mike@mail.com |
-| 3   | 3    | Lisa | lisa@mail.com |
+For instance, if Mike's email gets changed:
+
+| Key | Id   | Name | Email                 |
+|-----|------|------|-----------------------|
+| 2   | 2    | Mike | mike_changed@mail.com |
+
+Then the form should submit:
+
+```html
+<form method="post">
+<input type="hidden" name="users[2].email" value="mike_changed@mail.com">
+</form>
+```
+
+And that's it!
 
 ### Removing users
 
@@ -232,10 +252,19 @@ In order to tell which users are removed, the _client-side_ will set **id=null**
 
 The _server-side_ will then remove all instances with null id.
 
-## The client side
+To sum it up, **this is the databinding contract** for `Map`-backed collection of items:
+
+1. **New** items are stored in the `Map` with **negative key values** and **id=null**
+2. **Deleted** items are kept in the `Map` with the **same key**, but setting **id=null**
+3. **Modified** items are kept in the `Map` with the **same key and same id**, setting the **new values for the modified properties**.
+
+## Using `JPA`
+
+:children_crossing: _work in progress_
+
+## The _client-side_
 
 Now that there's a **databinding contract** in place, let's see how to play by these rules at _client-side_.
-
 
 We'll be using:
 
