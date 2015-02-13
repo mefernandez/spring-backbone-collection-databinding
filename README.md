@@ -258,7 +258,35 @@ To sum it up, **this is the databinding contract** for `Map`-backed collection o
 2. **Deleted** items are kept in the `Map` with the **same key**, but setting **id=null**
 3. **Modified** items are kept in the `Map` with the **same key and same id**, setting the **new values for the modified properties**.
 
-## Using `JPA`
+## Using `JPA` on a `@OneToMany` relationship
+
+Up to this point, the collection of `Users` have been stored _in-memory_ using a `List` or a `Map`. However, a real-life application would typically use something like a database to store data. So, let's see how the databinding is done using the [spring-data-jpa](http://projects.spring.io/spring-data-jpa/) module.
+
+### Components
+
+First thing to change will be the `repository` in the `@Controller` from `List` or `Map` to `Repository`.
+```java
+@Controller
+public class JPADataBindingController {
+
+	@Autowired
+	private IUserRepository repository;
+	...
+}
+```
+
+The interface `IUserRepository` provides access to persisted `User`s and methods to save and update new `User`s.
+```java
+public interface IUserRepository extends CrudRepository<User, Long> {
+
+}
+```
+
+As you can see it's just an empty interface that specifies two Java Generics type parameters: the type of object to persist which shall be `User`, and the type of identifier which shall be `Long`. This interface will inherit methods such as `findOne(Long id)`, `findAll()`, and `save(User e)` from the `CrudRepository` interface. There's no need to implement anything: Spring will :sparkles: automagically :sparkles: do eveything for us!
+
+### Sticking to `Map`
+
+Before moving on to `@OneToMany` relationships, let's see how the case for [`Map` seen before](#a-non-empty-map) seen before applies to `JPA`.
 
 :children_crossing: _work in progress_
 
