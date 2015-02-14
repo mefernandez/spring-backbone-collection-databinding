@@ -304,7 +304,7 @@ public Form getForm() {
 }
 ```
 
-Hence, the view will work just as described in the case for `Map`. Upon `POST` request, the `Map` needs to be processed to call `@Repository` `save()` or `delete()` methods accordin to the `Map` databinding contract.
+Hence, the view will work just as described in the case for `Map`. Upon `POST` request, the `Map` needs to be processed to call `@Repository` `save()` or `delete()` methods according to the `Map` databinding contract.
 
 ```java
 @RequestMapping(value = "/jpa", method = RequestMethod.POST)
@@ -314,6 +314,7 @@ public String updateUsers(@ModelAttribute("form") Form form) {
 	for (Entry<Long, User> entry : entrySet) {
 		Long key = entry.getKey();
 		User user = entry.getValue();
+		// Decide if this item gets deleted or needs to be saved
 		if (key > 0 && user.getId() == null) {
 			this.repository.delete(user);
 		} else {
