@@ -288,6 +288,42 @@ As you can see it's just an empty interface that specifies two Java Generics typ
 
 Before moving on to `@OneToMany` relationships, let's see how the case for [`Map` seen before](#a-non-empty-map) seen before applies to `JPA`.
 
+`JPA` methods for retrieving collections of `@Entities` like `findAll()` return an `Iterable`. Since we need a `Map` in our `Form` object, we need to do some transformation in `@ModelAttribute` annotated method, like this:
+
+```java
+@ModelAttribute("form")
+public Form getForm() {
+	Form form = new Form();
+	Map<Long, User> usersMap = new HashMap<Long, User>();
+	Iterable<User> usersInRepository = this.repository.findAll();
+	for (User user : usersInRepository) {
+		usersMap.put(user.getId(), user);
+	}
+	form.setUsers(usersMap);
+	return form;
+}
+```
+
+Hence, the view will work just as described in the case for `Map`. Upon `POST` request, the `Map` needs to be processed to call `@Repository` `save()` or `delete()` methods accordin to the `Map` databinding contract.
+
+```java
+@RequestMapping(value = "/jpa", method = RequestMethod.POST)
+public String updateUsers(@ModelAttribute("form") Form form) {
+	// Save the binded data to our "Repository"
+	Set<Entry<Long, User>> entrySet = form.getUsers().entrySet();
+	for (Entry<Long, User> entry : entrySet) {
+		Long key = entry.getKey();
+		User user = entry.getValue();
+		if (key > 0 && user.getId() == null) {
+			this.repository.delete(user);
+		} else {
+			this.repository.save(user);
+		}
+	}
+	return "redirect:/jpa";
+}
+```
+
 :children_crossing: _work in progress_
 
 ## The _client-side_
