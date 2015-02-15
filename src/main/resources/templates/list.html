@@ -2,18 +2,9 @@
 <html>
 <head>
 <title>DataBinding Case Study</title>
-<!-- inject:js -->
-<script src="/js/libs/jquery.js"></script>
-<script src="/js/libs/underscore.js"></script>
-<script src="/js/libs/handlebars.js"></script>
-<script src="/js/libs/backbone.js"></script>
-<script src="/js/libs/backbone.localStorage.js"></script>
+<th:block th:include="head :: scripts"></th:block>
+<th:block th:include="head :: css"></th:block>
 <script src="/js/list-databinding.js"></script>
-<!-- endinject -->
-<!-- inject:css -->
-<link rel="stylesheet" href="/css/styles.css" />
-<!-- endinject -->
-
 <script type="text/x-handlebars-template" id="user-row-template">
       <tr>
         <td><input type="hidden" name="users[{{index}}].name" value="{{name}}"/>{{name}}</td>
@@ -23,29 +14,40 @@
 </script>
 </head>
 <body>
-	<form id="new-user-form" method="post">
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Email</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody id="user-table-template">
-				<tr>
-					<td><input type="text" name="name" placeholder="Enter Name" /></td>
-					<td><input type="text" name="email" placeholder="Enter Email" /></td>
-					<td><button id="add-new-user-btn">Add</button></td>
-				</tr>
-				<tr th:each="user: ${form.users}">
-					<td th:text="${user.name}">John</td>
-					<td><a th:text="${user.email}" th:href="|mailto:${user.email}|">john@mail.com</a></td>
-					<td></td>
-				</tr>
-			</tbody>
-		</table>
-		<input type="submit" value="Save" />
-	</form>
+	<th:block th:include="nav :: nav"></th:block>
+	<div class="container">
+		<div class="starter-template">
+			<h1>JPA</h1>
+			<p class="lead">Perform databinding on a Collection retrieved from a Spring's @Repository</p>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<form id="new-user-form" method="post">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Email</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody id="user-table-template">
+							<tr>
+								<td><input type="text" name="name" placeholder="Enter Name" /></td>
+								<td><input type="text" name="email" placeholder="Enter Email" /></td>
+								<td><button id="add-new-user-btn">Add</button></td>
+							</tr>
+							<tr th:each="user: ${form.users}">
+								<td th:text="${user.name}">John</td>
+								<td><a th:text="${user.email}" th:href="|mailto:${user.email}|">john@mail.com</a></td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+					<input type="submit" value="Save" />
+				</form>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
