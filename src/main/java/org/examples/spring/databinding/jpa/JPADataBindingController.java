@@ -30,6 +30,7 @@ public class JPADataBindingController {
 		for (Entry<Long, User> entry : entrySet) {
 			Long key = entry.getKey();
 			User user = entry.getValue();
+			// Decide if this item gets deleted or needs to be saved
 			if (key > 0 && user.getId() == null) {
 				this.repository.delete(user);
 			} else {

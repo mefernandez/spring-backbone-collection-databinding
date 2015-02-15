@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<th:block th:fragment="nav">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="https://github.com/mefernandez/spring-backbone-collection-databinding">Cases:</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li th:class="${#httpServletRequest.requestURI eq '/list'} ? 'active' : ''"><a href="/list">List</a></li>
+            <li th:class="${#httpServletRequest.requestURI eq '/map'} ? 'active' : ''"><a href="/map">Map</a></li>
+            <li th:class="${#httpServletRequest.requestURI eq '/jpa'} ? 'active' : ''"><a href="/jpa">JPA</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+</th:block>
+</body>
+</html>
