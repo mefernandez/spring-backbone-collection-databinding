@@ -258,7 +258,72 @@ To sum it up, **this is the databinding contract** for `Map`-backed collection o
 2. **Deleted** items are kept in the `Map` with the **same key**, but setting **id=null**
 3. **Modified** items are kept in the `Map` with the **same key and same id**, setting the **new values for the modified properties**.
 
-## Using `JPA`
+## Using `JPA` on a `@OneToMany` relationship
+
+Up to this point, the collection of `Users` have been stored _in-memory_ using a `List` or a `Map`. However, a real-life application would typically use something like a database to store data. So, let's see how the databinding is done using the [spring-data-jpa](http://projects.spring.io/spring-data-jpa/) module.
+
+### Components
+
+First thing to change will be the `repository` in the `@Controller` from `List` or `Map` to `Repository`.
+```java
+@Controller
+public class JPADataBindingController {
+
+	@Autowired
+	private IUserRepository repository;
+	...
+}
+```
+
+The interface `IUserRepository` provides access to persisted `User`s and methods to save and update new `User`s.
+```java
+public interface IUserRepository extends CrudRepository<User, Long> {
+
+}
+```
+
+As you can see it's just an empty interface that specifies two Java Generics type parameters: the type of object to persist which shall be `User`, and the type of identifier which shall be `Long`. This interface will inherit methods such as `findOne(Long id)`, `findAll()`, and `save(User e)` from the `CrudRepository` interface. There's no need to implement anything: Spring will :sparkles: automagically :sparkles: do eveything for us!
+
+### Sticking to `Map`
+
+Before moving on to `@OneToMany` relationships, let's see how the case for [`Map` seen before](#a-non-empty-map) seen before applies to `JPA`.
+
+`JPA` methods for retrieving collections of `@Entities` like `findAll()` return an `Iterable`. Since we need a `Map` in our `Form` object, we need to do some transformation in `@ModelAttribute` annotated method, like this:
+
+```java
+@ModelAttribute("form")
+public Form getForm() {
+	Form form = new Form();
+	Map<Long, User> usersMap = new HashMap<Long, User>();
+	Iterable<User> usersInRepository = this.repository.findAll();
+	for (User user : usersInRepository) {
+		usersMap.put(user.getId(), user);
+	}
+	form.setUsers(usersMap);
+	return form;
+}
+```
+
+Hence, the view will work just as described in the case for `Map`. Upon `POST` request, the `Map` needs to be processed to call `@Repository` `save()` or `delete()` methods according to the `Map` databinding contract.
+
+```java
+@RequestMapping(value = "/jpa", method = RequestMethod.POST)
+public String updateUsers(@ModelAttribute("form") Form form) {
+	// Save the binded data to our "Repository"
+	Set<Entry<Long, User>> entrySet = form.getUsers().entrySet();
+	for (Entry<Long, User> entry : entrySet) {
+		Long key = entry.getKey();
+		User user = entry.getValue();
+		// Decide if this item gets deleted or needs to be saved
+		if (key > 0 && user.getId() == null) {
+			this.repository.delete(user);
+		} else {
+			this.repository.save(user);
+		}
+	}
+	return "redirect:/jpa";
+}
+```
 
 :children_crossing: _work in progress_
 
