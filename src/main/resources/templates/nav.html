@@ -20,6 +20,7 @@
             <li th:class="${#httpServletRequest.requestURI eq '/list'} ? 'active' : ''"><a href="/list">List</a></li>
             <li th:class="${#httpServletRequest.requestURI eq '/map'} ? 'active' : ''"><a href="/map">Map</a></li>
             <li th:class="${#httpServletRequest.requestURI eq '/jpa'} ? 'active' : ''"><a href="/jpa">JPA</a></li>
+            <li th:class="${#httpServletRequest.requestURI eq '/onetomany'} ? 'active' : ''"><a href="/onetomany">@OneToMany</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
