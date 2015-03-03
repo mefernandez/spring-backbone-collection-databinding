@@ -4,21 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 /**
  * Assigns new ids for new Users and removes deleted users from the Map
  * 
  * @author mefernandez
  */
-public class UserMapPostProcessor {
+@Component
+public class UserOneToManyPhonePostProcessor {
+	
+	@Autowired
+	IPhoneRepository phoneRepository;
 
 	public void process(Map<Long, Phone> phones) {
 		List<Long> keys = new ArrayList<Long>(phones.keySet());
 		for (Long key : keys) {
 			Phone phone = phones.get(key);
-			if (phone.getId() == null) {
+			if (key > 0 && phone.getId() == null) {
 				phones.remove(key);
-			} else if (phone.getId() < 0L) {
-				phone.setId(null);
+				phoneRepository.delete(phone);
 			}
 		}
 	}

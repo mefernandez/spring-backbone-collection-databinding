@@ -16,7 +16,8 @@ public class OneToManyDataBindingController {
 	@Autowired
 	private IOneToManyUserRepository repository;
 
-	private UserMapPostProcessor processor = new UserMapPostProcessor();
+	@Autowired
+	private UserOneToManyPhonePostProcessor processor;
 	
 	@RequestMapping(value = "/onetomany", method = RequestMethod.GET)
 	public String getHome() {
@@ -27,7 +28,7 @@ public class OneToManyDataBindingController {
 	public String updateUsers(@ModelAttribute("form") Form form) {
 		// Process the Users in this Map according to 
 		// the databinding convention for Map about keys and ids
-		//processor.process(form.getUser().getPhones());
+		processor.process(form.getUser().getPhones());
 		
 		// Save the binded data to our "Repository"
 		User user = form.getUser();
