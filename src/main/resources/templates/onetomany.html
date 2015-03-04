@@ -9,7 +9,7 @@
 <td><input type="hidden" name="user.phones[{{key}}].id" value="{{id}}"/>{{id}}</td>
 </script>
 <script type="text/x-handlebars-template" id="user-row-template">
-<td>{{id}}</td>
+<td><input type="hidden" name="user.phones[{{key}}].id" value="{{id}}"/>{{id}}</td>
 <td><input type="hidden" name="user.phones[{{key}}].number" value="{{number}}"/>{{number}}</td>
 <td><input type="button" class="edit-user-btn" value="Edit" data-id="{{id}}"/></td>
 <td><input type="button" class="delete-user-btn" value="Delete" data-id="{{id}}"/></td>
@@ -52,7 +52,7 @@
 							<th:block th:if="${form.user.phones} != null"> 
 							<tr th:each="phone: ${form.user.phones.values()}">
 								<td th:text="${phone.id}">1</td>
-								<td th:text="${phone.number}" class="editable" data-model-attr="phone.number">John</td>
+								<td th:text="${phone.number}" class="editable" data-model-attr="number">555-5555</td>
 								<td><input type="button" class="edit-user-btn" value="Edit" th:attr="data-id=${phone.id}"/></td>
 								<td><input type="button" class="delete-user-btn" value="Delete" th:attr="data-id=${phone.id}"/></td>
 							</tr>

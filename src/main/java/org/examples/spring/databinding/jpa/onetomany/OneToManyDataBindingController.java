@@ -41,6 +41,7 @@ public class OneToManyDataBindingController {
 		Form form = new Form();
 		if (repository.count() > 0) {
 			User user = repository.findAll().iterator().next();
+			this.processor.process(user.getPhones());
 			form.setUser(user);
 		} else {
 			form.setUser(new User());

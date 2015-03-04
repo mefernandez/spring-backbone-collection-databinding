@@ -25,6 +25,9 @@ public class UserOneToManyPhonePostProcessor {
 			if (key > 0 && phone.getId() == null) {
 				phones.remove(key);
 				phoneRepository.delete(phone);
+			} else if (key < 0 && phone.getId() != null) {
+				phones.remove(key);
+				phones.put(phone.getId(), phone);
 			}
 		}
 	}
