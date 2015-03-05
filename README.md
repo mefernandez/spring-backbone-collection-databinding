@@ -258,13 +258,79 @@ To sum it up, **this is the databinding contract** for `Map`-backed collection o
 2. **Deleted** items are kept in the `Map` with the **same key**, but setting **id=null**
 3. **Modified** items are kept in the `Map` with the **same key and same id**, setting the **new values for the modified properties**.
 
-## Using `JPA` on a `@OneToMany` relationship
+## Binding a `@OneToMany` relationship with `JPA`
 
-Up to this point, the collection of `Users` have been stored _in-memory_ using a `List` or a `Map`. However, a real-life application would typically use something like a database to store data. So, let's see how the databinding is done using the [spring-data-jpa](http://projects.spring.io/spring-data-jpa/) module.
+Up to this point, the collection of `Users` have been stored _in-memory_ using a `List` or a `Map`, but in this section we're facing a more real-life scenario.
+
+Let the `User` have a collection of `Phone` numbers, as shown in the picture below.
+![User and Phone numbers class diagram](http://yuml.me/04c674f9)
+
+The `User` and `Phone` entities will be persisted using the [spring-data-jpa](http://projects.spring.io/spring-data-jpa/) module.
+
+The case to study is editing a specific User details, adding, chanding and deleting phone numbers.
+
+User
+Name: John
+Email: john@mail.com
+Phones:
+| Number |
+|--------|
+|555-5551|
+|555-5552|
+|555-5553|
 
 ### Components
 
-First thing to change will be the `repository` in the `@Controller` from `List` or `Map` to `Repository`.
+Here's the new `User` class. You might notice it declares a `@OneToMany` relationship using a `Map`: more on this later.
+
+```java
+@Entity
+public class User implements Serializable {
+
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column(nullable = false)
+	private String name;
+
+	@Column(nullable = false)
+	private String email;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="id_user")
+	private Map<Long, Phone> phones;
+
+}
+```
+
+A very simple `Phone` entity to hold the phone number.
+
+```java
+@Entity
+public class Phone implements Serializable {
+	
+	@Id
+	@GeneratedValue
+	private Long id;
+
+	@Column(nullable = false)
+	private String number;
+}
+```
+
+A new `IUserRepository` interface provides methods to get, save and update `User`s by extending Spring's `CrudRepository`.
+
+```java
+public interface IUserRepository extends CrudRepository<User, Long> {
+
+}
+```
+
+As you can see it's just an empty interface that specifies two Java Generics type parameters: the type of object to persist which shall be `User`, and the type of identifier which shall be `Long`. This interface will inherit methods such as `findOne(Long id)`, `findAll()`, and `save(User e)` from the `CrudRepository` interface. There's no need to implement anything: Spring will :sparkles: automagically :sparkles: do eveything for us!
+
+The `repository` in the `@Controller` will now change from `List` or `Map` to `Repository`.
+
 ```java
 @Controller
 public class JPADataBindingController {
@@ -275,57 +341,49 @@ public class JPADataBindingController {
 }
 ```
 
-The interface `IUserRepository` provides access to persisted `User`s and methods to save and update new `User`s.
-```java
-public interface IUserRepository extends CrudRepository<User, Long> {
-
-}
-```
-
-As you can see it's just an empty interface that specifies two Java Generics type parameters: the type of object to persist which shall be `User`, and the type of identifier which shall be `Long`. This interface will inherit methods such as `findOne(Long id)`, `findAll()`, and `save(User e)` from the `CrudRepository` interface. There's no need to implement anything: Spring will :sparkles: automagically :sparkles: do eveything for us!
-
 ### Sticking to `Map`
 
-Before moving on to `@OneToMany` relationships, let's see how the case for [`Map` seen before](#a-non-empty-map) seen before applies to `JPA`.
+As mentioned before, the `@OneToMany` relationship between `User` and `Phone` is stored in a `Map`. This is so because the databinding problem does not change: we still need to figure out which items are new, and which ones will get deleted, so the convention for [`Map` seen before](#a-non-empty-map) seen before applies to `JPA` `@OneToMany` relationships.
 
-`JPA` methods for retrieving collections of `@Entities` like `findAll()` return an `Iterable`. Since we need a `Map` in our `Form` object, we need to do some transformation in `@ModelAttribute` annotated method, like this:
+This is how the `@Controller` finds the user to be edited. To simplify things, it creates a new one if it none exists, or else it returns the first one in the repository.
 
 ```java
-@ModelAttribute("form")
-public Form getForm() {
-	Form form = new Form();
-	Map<Long, User> usersMap = new HashMap<Long, User>();
-	Iterable<User> usersInRepository = this.repository.findAll();
-	for (User user : usersInRepository) {
-		usersMap.put(user.getId(), user);
+	@ModelAttribute("form")
+	public Form getForm(HttpServletRequest request) {
+		Form form = new Form();
+		if (repository.count() > 0) {
+			User user = repository.findAll().iterator().next();
+			this.processor.process(user.getPhones());
+			form.setUser(user);
+		} else {
+			form.setUser(new User());
+		}
+		return form;
 	}
-	form.setUsers(usersMap);
-	return form;
-}
 ```
 
-Hence, the view will work just as described in the case for `Map`. Upon `POST` request, the `Map` needs to be processed to call `@Repository` `save()` or `delete()` methods according to the `Map` databinding contract.
+Upon `POST` request, the `@Controller` calls the `Processor` to perform the most suitable `Repository` operations according to the `Map` convention for databinding.
 
 ```java
-@RequestMapping(value = "/jpa", method = RequestMethod.POST)
-public String updateUsers(@ModelAttribute("form") Form form) {
-	// Save the binded data to our "Repository"
-	Set<Entry<Long, User>> entrySet = form.getUsers().entrySet();
-	for (Entry<Long, User> entry : entrySet) {
-		Long key = entry.getKey();
-		User user = entry.getValue();
-		// Decide if this item gets deleted or needs to be saved
-		if (key > 0 && user.getId() == null) {
-			this.repository.delete(user);
-		} else {
-			this.repository.save(user);
+	@Autowired
+	IPhoneRepository phoneRepository;
+
+	public void process(Map<Long, Phone> phones) {
+		List<Long> keys = new ArrayList<Long>(phones.keySet());
+		for (Long key : keys) {
+			Phone phone = phones.get(key);
+			if (key > 0 && phone.getId() == null) {
+				phones.remove(key);
+				phoneRepository.delete(phone);
+			} else if (key < 0 && phone.getId() != null) {
+				phones.remove(key);
+				phones.put(phone.getId(), phone);
+			}
 		}
 	}
-	return "redirect:/jpa";
-}
 ```
 
-:children_crossing: _work in progress_
+Note that it's not enough to remove a `Phone` from the `Map`, we also need to call `phoneRepository` to delete it separately.
 
 ## The _client-side_
 
