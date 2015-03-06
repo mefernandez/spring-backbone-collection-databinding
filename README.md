@@ -7,7 +7,13 @@ A case study on collection data binding with Spring and Backbone
 
 While developing a web application with Spring boot as the main framework, I came across the need to add, remove and modify a list of elements in a web page and submit these changes to the server. Although it's a common task for a web framework, I found it to be non-trivial. So, I set out to write a case study to help me organize what I've learnt and maybe help others.
 
-The application resulting from this case study is [running live thanks to Heroku](http://obscure-reef-8002.herokuapp.com/).
+The application resulting from this case study is running live thanks to Heroku.
+
+[![Heroku](https://www.herokucdn.com/deploy/button.png)](http://obscure-reef-8002.herokuapp.com/).
+
+For the impatient, jump to [Conclusions](conclusions).
+
+There's still plenty of room for improvement, so **fork this repo and get involved**!
 
 ## The case
 
@@ -252,6 +258,8 @@ In order to tell which users are removed, the _client-side_ will set **id=null**
 
 The _server-side_ will then remove all instances with null id.
 
+### Map databinding convention
+
 To sum it up, **this is the databinding contract** for `Map`-backed collection of items:
 
 1. **New** items are stored in the `Map` with **negative key values** and **id=null**
@@ -270,9 +278,13 @@ The `User` and `Phone` entities will be persisted using the [spring-data-jpa](ht
 The case to study is editing a specific User details, adding, chanding and deleting phone numbers.
 
 User
+
 Name: John
+
 Email: john@mail.com
+
 Phones:
+
 | Number |
 |--------|
 |555-5551|
@@ -393,3 +405,9 @@ We'll be using:
 
 1. [Thymeleaf](http://www.thymeleaf.org/) to render the initial table with the collection of `User`s retrieved from the `Repository`.
 2. [Backbone.js](http://backbonejs.org/) to add dynamic capabilities to the table rendered by Thymeleaf to perform CRUD (CReate, Update, Delete) operations and to abide by Spring's databinding contract. Take a look at the [annotated, side-by-side commented Backbone code](http://www.explainjs.com/explain?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmefernandez%2Fspring-backbone-collection-databinding%2Fmaster%2Fsrc%2Fmain%2Fresources%2Fstatic%2Fjs%2Fmap-databinding.js).
+
+## Conclusions
+
+1. `List` is hard to use becouse Spring performs databinding based on indexes and this can't be easily changed.
+2. `Map` overcomes this limitations and databinding can be done following a [simple convention](map-databinding-convention).
+
