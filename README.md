@@ -355,7 +355,7 @@ public class JPADataBindingController {
 
 ### Sticking to `Map`
 
-As mentioned before, the `@OneToMany` relationship between `User` and `Phone` is stored in a `Map`. This is so because the databinding problem does not change: we still need to figure out which items are new, and which ones will get deleted, so the convention for [`Map` seen before](#a-non-empty-map) seen before applies to `JPA` `@OneToMany` relationships.
+As mentioned before, the `@OneToMany` relationship between `User` and `Phone` is stored in a `Map`. This is so because the databinding problem does not change: we still need to figure out which items are new, and which ones will get deleted, so the convention for [`Map` seen before](#map-databinding-convention) seen before applies to `JPA` `@OneToMany` relationships.
 
 This is how the `@Controller` finds the user to be edited. To simplify things, it creates a new one if it none exists, or else it returns the first one in the repository.
 
@@ -399,12 +399,19 @@ Note that it's not enough to remove a `Phone` from the `Map`, we also need to ca
 
 ## The _client-side_
 
-Now that there's a **databinding contract** in place, let's see how to play by these rules at _client-side_.
+Now that there's a [databinding convention for Map](#map-databinding-convention) in place, let's see how to play by these rules at _client-side_.
 
 We'll be using:
 
 1. [Thymeleaf](http://www.thymeleaf.org/) to render the initial table with the collection of `User`s retrieved from the `Repository`.
 2. [Backbone.js](http://backbonejs.org/) to add dynamic capabilities to the table rendered by Thymeleaf to perform CRUD (CReate, Update, Delete) operations and to abide by Spring's databinding contract. Take a look at the [annotated, side-by-side commented Backbone code](http://www.explainjs.com/explain?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmefernandez%2Fspring-backbone-collection-databinding%2Fmaster%2Fsrc%2Fmain%2Fresources%2Fstatic%2Fjs%2Fmap-databinding.js).
+ 
+Here's the view lifecycle:
+1. The `@Controller` loads the `User` from `Repository` in a `@ModelAttribute` and passes it to the `ThymeLeaf` view.
+2. `Thymeleaf` renders the `User`'s attributes name and email and iterates the collection of `Phone` numbers to render it as a `HTML` table.
+3. In the _client-side_, `Backbone` loads a model collection of phone numbers by parsing information from the `HTML` table, and sets up event listeners to add, delete, and modify phone numbers.
+4. For each change in the table of phone numbers, `Backbone` renders a template which includes `input` elements named according to the [Map databinding convention](#map-databinding-convention).
+5. When the form is submitted, Spring will perform databinding and the `User` and `Phone` numbers will be in the right place.
 
 ## Conclusions
 
