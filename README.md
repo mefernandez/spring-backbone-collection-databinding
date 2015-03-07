@@ -11,9 +11,9 @@ The application resulting from this case study is running live thanks to Heroku.
 
 [![Heroku](https://www.herokucdn.com/deploy/button.png)](http://obscure-reef-8002.herokuapp.com/).
 
-For the impatient, jump to [Conclusions](conclusions).
+For the impatient, jump to [Conclusions](conclusions) _(pun intended)_.
 
-There's still plenty of room for improvement, so **fork this repo and get involved**!
+There's still plenty of room for improvement: check the issues in this repo, fork it and get involved!
 
 ## The case
 
@@ -408,6 +408,9 @@ We'll be using:
 
 ## Conclusions
 
-1. `List` is hard to use becouse Spring performs databinding based on indexes and this can't be easily changed.
-2. `Map` overcomes this limitations and databinding can be done following a [simple convention](map-databinding-convention).
+The main conclusion that can be drawn from these case studies are:
+
+1. Performing databinding safely on collections backed by `List` is limited to [collections that stay empty until databinding occurs](an-empty-list) because Spring performs databinding based on indexes which might change between GET and POST requests. This behaviour is coded deep into Spring's `BeanWrapperImpl.getPropertyValue()` so it cannot be easily changed.
+2. `Map` overcomes these limitations and databinding can be done following a [simple convention](map-databinding-convention).
+3. Regarding the _client-side_, it's easy to implement a dynamic view that sticks to the convention in Backbone or any other frontend technology.
 
