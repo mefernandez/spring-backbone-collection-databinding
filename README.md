@@ -410,7 +410,7 @@ We'll be using:
 
 The main conclusion that can be drawn from these case studies are:
 
-1. Performing databinding safely on collections backed by `List` is limited to [collections that stay empty until databinding occurs](an-empty-list) because Spring performs databinding based on indexes which might change between GET and POST requests. This behaviour is coded deep into Spring's `BeanWrapperImpl.getPropertyValue()` so it cannot be easily changed.
-2. `Map` overcomes these limitations and databinding can be done following a [simple convention](map-databinding-convention).
+1. Performing databinding safely on collections backed by `List` is limited to [collections that stay empty until databinding occurs](#an-empty-list) because Spring performs databinding based on indexes which might change between GET and POST requests. This behaviour is coded deep into Spring's `BeanWrapperImpl.getPropertyValue()` so it cannot be easily changed.
+2. `Map` overcomes these limitations and databinding can be done following a [simple convention](#map-databinding-convention).
 3. Regarding the _client-side_, it's easy to implement a dynamic view that sticks to the convention in Backbone or any other frontend technology.
 
