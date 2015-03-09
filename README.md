@@ -11,7 +11,7 @@ The application resulting from this case study is running live thanks to Heroku.
 
 [![Heroku](https://www.herokucdn.com/deploy/button.png)](http://obscure-reef-8002.herokuapp.com/).
 
-For the impatient, jump to [Conclusions](conclusions) _(pun intended)_.
+For the impatient, jump to [Conclusions](#conclusions) _(pun intended)_.
 
 There's still plenty of room for improvement: check the issues in this repo, fork it and get involved!
 
