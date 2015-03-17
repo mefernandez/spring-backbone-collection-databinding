@@ -404,14 +404,17 @@ Now that there's a [databinding convention for Map](#map-databinding-convention)
 We'll be using:
 
 1. [Thymeleaf](http://www.thymeleaf.org/) to render the initial table with the collection of `User`s retrieved from the `Repository`.
-2. [Backbone.js](http://backbonejs.org/) to add dynamic capabilities to the table rendered by Thymeleaf to perform CRUD (CReate, Update, Delete) operations and to abide by Spring's databinding contract. Take a look at the [annotated, side-by-side commented Backbone code](http://www.explainjs.com/explain?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmefernandez%2Fspring-backbone-collection-databinding%2Fmaster%2Fsrc%2Fmain%2Fresources%2Fstatic%2Fjs%2Fmap-databinding.js).
- 
+2. [Backbone.js](http://backbonejs.org/) to add dynamic capabilities to the table rendered by Thymeleaf to perform CRUD (CReate, Update, Delete) operations and to abide by Spring's databinding contract.
+
 Here's the view lifecycle:
+
 1. The `@Controller` loads the `User` from `Repository` in a `@ModelAttribute` and passes it to the `ThymeLeaf` view.
 2. `Thymeleaf` renders the `User`'s attributes name and email and iterates the collection of `Phone` numbers to render it as a `HTML` table.
 3. In the _client-side_, `Backbone` loads a model collection of phone numbers by parsing information from the `HTML` table, and sets up event listeners to add, delete, and modify phone numbers.
 4. For each change in the table of phone numbers, `Backbone` renders a template which includes `input` elements named according to the [Map databinding convention](#map-databinding-convention).
 5. When the form is submitted, Spring will perform databinding and the `User` and `Phone` numbers will be in the right place.
+
+I think the best way to understand how the `Backbone` part works is to take a look at the source code using [ExplainJS](http://www.explainjs.com), which shows you an annotated side-by-side comments|code view of any source file by just providing its URL. For instance, [here's the side-by-side annotated code for the case of map-databinding](http://www.explainjs.com/explain?src=https%3A%2F%2Fraw.githubusercontent.com%2Fmefernandez%2Fspring-backbone-collection-databinding%2Fmaster%2Fsrc%2Fmain%2Fresources%2Fstatic%2Fjs%2Fmap-databinding.js). Pass the URL to the other scripts in order to obtain a similar result.
 
 ## Conclusions
 
